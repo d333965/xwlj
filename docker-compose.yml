@@ -2,64 +2,47 @@ version: '3.8'
 
 services:
   db:
-    image: mysql:latest
-    container_name: mysql
+    image: mysql:8
     environment:
       MYSQL_ROOT_PASSWORD: 333965lq
       MYSQL_DATABASE: legym
-    ports:
-      - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
 
   fastapi:
     build:
       context: ./fastapi
       dockerfile: Dockerfile
-    container_name: fastapi
-    depends_on:
-      - db
-    environment:
-      DATABASE_URL: mysql://root:333965lq@db:3306/legym
-    volumes:
-      - ./fastapi/backend:/app
     command: >
-      sh -c "aerich upgrade && uvicorn main:app --host 0.0.0.0 --port 8000"
-
-  run_task:
-    build:
-      context: ./fastapi
-      dockerfile: Dockerfile
-    container_name: run_task
+      sh -c "uvicorn backend.main:app --host 0.0.0.0 --port 8000 & 
+             python backend/runTask/runMain.py"
+    volumes:
+      - ./fastapi:/app
+    ports:
+      - "8000:8000"
     depends_on:
       - db
-    environment:
-      DATABASE_URL: mysql://root:333965lq@db:3306/legym
-    volumes:
-      - ./fastapi/backend:/app
-    command: python /app/runTask/runMain.py
 
-  vue:
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - fastapi
+      - vue3
+
+  vue3:
     build:
       context: ./vue3
       dockerfile: Dockerfile
-    container_name: vue
     volumes:
-      - ./vue3/dist:/usr/share/nginx/html
-
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./vue3/dist:/usr/share/nginx/html
     depends_on:
-      - vue
       - fastapi
 
 volumes:
   db_data:
-
-查看全部
