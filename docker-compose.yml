@@ -36,13 +36,14 @@ services:
       - fastapi
       - vue3
 
-   vue3:
-     build:
-       context: .
-       dockerfile: vue3/Dockerfile
-     ports:
-       - "80:80"
-     depends_on:
-       - fastapi
+  vue3:
+    build:
+      context: .
+      dockerfile: vue3/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - fastapi
+
 volumes:
   db_data:
