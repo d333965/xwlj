@@ -1,0 +1,8 @@
+[tool.aerich]
+tortoise_orm = "app.mysql.settings.TORTOISE_ORM"
+location = "./migrations"
+src_folder = "./."
+
+[tool.poetry.dependencies]
+# ... 其他依赖项 ...
+schedule = "^1.1.0"  # 使用最新版本
