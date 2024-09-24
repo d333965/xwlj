@@ -1,8 +1,15 @@
-FROM nginx:alpine
+# 使用官方的 Node 镜像作为构建阶段
+FROM node:14 as build-stage
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
 
-COPY dist /usr/share/nginx/html
-
-# 添加以下行来调试
-RUN ls -la /usr/share/nginx/html
+# 使用官方的 Nginx 镜像作为生产阶段
+FROM nginx:stable-alpine as production-stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
