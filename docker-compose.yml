@@ -16,8 +16,9 @@ services:
       context: ./fastapi
       dockerfile: Dockerfile
     command: >
-      sh -c "uvicorn backend.main:app --host 0.0.0.0 --port 8000 & 
-             python backend/runTask/runMain.py"
+      sh -c "aerich upgrade && 
+             uvicorn backend.main:app --host 0.0.0.0 --port 8000 & 
+             python backend/app/runTask/runMain.py"
     volumes:
       - ./fastapi:/app
     ports:
