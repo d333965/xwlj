@@ -6,7 +6,7 @@ TORTOISE_ORM = {
         'default': {
             'engine': 'tortoise.backends.mysql',  # MySQL or Mariadb
             'credentials': {
-                'host': '127.0.0.1',
+                'host': 'mysql',
                 'port': '3306',
                 'user': 'root',
                 'password': '333965lq',
