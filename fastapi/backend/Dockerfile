@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "aerich init-db && uvicorn main:app --host 0.0.0.0 --port 8000 & python runTask/runMain.py"]
