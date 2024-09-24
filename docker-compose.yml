@@ -2,48 +2,40 @@ version: '3.8'
 
 services:
   db:
-    image: mysql:8
+    image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: 333965lq
       MYSQL_DATABASE: legym
-    volumes:
-      - db_data:/var/lib/mysql
     ports:
       - "3306:3306"
-
-  fastapi:
-    build:
-      context: ./fastapi
-      dockerfile: Dockerfile
-    command: >
-      sh -c "aerich upgrade && 
-             uvicorn backend.main:app --host 0.0.0.0 --port 8000 & 
-             python backend/app/runTask/runMain.py"
     volumes:
-      - ./fastapi:/app
-    ports:
-      - "8000:8000"
+      - db_data:/var/lib/mysql
+
+  backend:
+    build: ./fastapi/backend
+    command: >
+      sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 &
+             python runTask/runMain.py"
+    volumes:
+      - ./fastapi/backend:/app
     depends_on:
       - db
+    environment:
+      DATABASE_URL: mysql://root:333965lq@db:3306/legym
+
+  frontend:
+    build: ./vue3
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
 
   nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+    build: ./nginx
     ports:
       - "80:80"
     depends_on:
-      - fastapi
-      - vue3
-
-  vue3:
-    build:
-      context: .
-      dockerfile: vue3/Dockerfile
-    ports:
-      - "80:80"
-    depends_on:
-      - fastapi
+      - frontend
 
 volumes:
   db_data:
