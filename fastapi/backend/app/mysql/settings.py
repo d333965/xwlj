@@ -6,7 +6,7 @@ TORTOISE_ORM = {
         'default': {
             'engine': 'tortoise.backends.mysql',  # MySQL or Mariadb
             'credentials': {
-                'host': 'mysql',  # 使用 docker-compose 中定义的服务名称
+                'host': '127.0.0.1',
                 'port': '3306',
                 'user': 'root',
                 'password': '333965lq',
@@ -20,7 +20,7 @@ TORTOISE_ORM = {
     },
     'apps': {
         'models': {
-            'models': ['app.mysql.models', "aerich.models"],
+            'models': ['app.mysql.models', "aerich.models"],  # 修改这里
             'default_connection': 'default'
         }
     },
