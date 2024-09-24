@@ -1,37 +1,53 @@
 version: '3.8'
 
 services:
+  # MySQL 服务
   mysql:
     image: mysql:8.0
+    container_name: mysql_db
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 333965lq
       MYSQL_DATABASE: legym
-    volumes:
-      - mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend
 
+  # FastAPI 服务
   fastapi:
-    build:
-      context: ./fastapi
-      dockerfile: Dockerfile
-    command: bash -c "uvicorn backend.main:app --host 0.0.0.0 --port 8000 & python backend/app/runTask/runMain.py"
+    build: ./fastapi
+    container_name: fastapi_app
+    command: bash -c "aerich upgrade && uvicorn backend.main:app --host 0.0.0.0 --port 8000 & python3 backend/runTask/runMain.py"
     volumes:
       - ./fastapi:/app
+    ports:
+      - "8000:8000"
     depends_on:
       - mysql
-    environment:
-      DATABASE_URL: mysql://root:333965lq@mysql:3306/legym
+    networks:
+      - backend
 
+  # Vue3 + Nginx 服务
   nginx:
-    image: nginx:latest
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./vue3/dist:/usr/share/nginx/html
+    build: ./nginx
+    container_name: nginx_server
     ports:
       - "80:80"
+    volumes:
+      - ./vue3/dist:/usr/share/nginx/html
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - fastapi
+    networks:
+      - frontend
+      - backend
 
 volumes:
   mysql_data:
+
+networks:
+  frontend:
+  backend:
