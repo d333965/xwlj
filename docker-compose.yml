@@ -5,13 +5,13 @@ services:
     build:
       context: ./fastapi/backend
       dockerfile: Dockerfile
-    command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 & python app/runTask/runMain.py"  # 修改路径
+    command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 & python app/runTask/runMain.py"
     volumes:
       - ./fastapi/backend:/app
     ports:
       - "8000:8000"
     depends_on:
-      - mysql
+      - mysql  # 确保 MySQL 服务在 FastAPI 服务之前启动
 
   vue:
     build:
