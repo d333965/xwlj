@@ -17,3 +17,6 @@ docker-compose build
 
 # Start the Docker containers in detached mode
 docker-compose up -d
+
+# Apply database migrations
+docker-compose exec backend aerich upgrade

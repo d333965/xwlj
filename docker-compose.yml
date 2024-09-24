@@ -7,7 +7,7 @@ services:
       MYSQL_ROOT_PASSWORD: 333965lq
       MYSQL_DATABASE: legym
     ports:
-      - "3306:3306"
+      - "3306:3306"  # 修改端口映射，避免冲突
     volumes:
       - db_data:/var/lib/mysql
 
@@ -26,7 +26,7 @@ services:
   frontend:
     build: ./vue3
     ports:
-      - "80:80"
+      - "8080:80"  # 修改端口映射，避免冲突
     depends_on:
       - backend
 
