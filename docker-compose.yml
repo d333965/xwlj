@@ -20,7 +20,7 @@ services:
   fastapi:
     build: ./fastapi
     container_name: fastapi_app
-    command: bash -c "aerich upgrade && uvicorn backend.main:app --host 0.0.0.0 --port 8000 & python3 backend/runTask/runMain.py"
+    command: bash -c "aerich upgrade && uvicorn backend.main:app --host 0.0.0.0 --port 8000 & python3 backend/app/runTask/runMain.py"
     volumes:
       - ./fastapi:/app
     ports:
